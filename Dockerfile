@@ -10,6 +10,4 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 8010
-
 CMD [ "node", "./index.js" ]
