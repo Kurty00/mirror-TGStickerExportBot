@@ -1,0 +1,22 @@
+kind: pipeline
+name: default
+type: docker
+
+steps:
+- name: publish
+  image: plugins/docker
+  settings:
+    username: automation
+    password: 
+      from_secret: gitea_password
+    registry: git.tardis.systems
+    repo: git.tardis.systems/automation/tgstickersbot
+    tags:
+    - latest
+    - main
+    ssh-agent-key:
+      from_secret: private_key
+    when:
+      branch: owo
+image_pull_secrets:
+- docker_registry_auth
