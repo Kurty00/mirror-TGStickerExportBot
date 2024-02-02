@@ -1,0 +1,11 @@
+{
+  "name": "tgstickerbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "GPLv3",
+  "type": "module",
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "telegraf": "^4.15.3"
+  }
+}
