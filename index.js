@@ -24,7 +24,12 @@ bot.on(message('sticker'), async (ctx) => {
     let dir = "files/" + ctx.message.sticker.set_name + "/";
     
     if (!fs.existsSync(dir)) {
+        console.log(`New sticker set - creating directory`)
         fs.mkdirSync(dir);
+    }
+    if (fs.existsSync(dir+set.name+".zip")) {
+        console.log(`Found existing pack.zip - deleting`)
+        fs.unlinkSync(dir+set.name+".zip");
     }
     fs.writeFileSync(dir+"stickerset.json", JSON.stringify(set))
     var links = [];
@@ -70,7 +75,7 @@ process.once('SIGTERM', () => bot.stop('SIGTERM'))
 function download(url, directory, name) {
 
     const dir = "files/" + directory + "/";
-    const path = dir + name.split(".").at(-1);
+    const path = dir + name + url.split(".").at(-1);
 
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
