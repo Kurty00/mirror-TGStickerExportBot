@@ -45,7 +45,13 @@ bot.on(message('sticker'), async (ctx) => {
     
     let zfilename = dir+set.name+".zip";
     await z.writeZip(zfilename);
-    await ctx.replyWithDocument(Input.fromLocalFile(zfilename), {caption: set.title});
+
+    let stat = fs.statSync(zfilename);
+    if(stat.size > 50*1024*1000){
+        ctx.reply("⚠ resulting file is too large and couldn't be sent");
+    } else {
+        await ctx.replyWithDocument(Input.fromLocalFile(zfilename), {caption: set.title});
+    }
 })
 
 bot.on('callback_query', async (ctx) => {
