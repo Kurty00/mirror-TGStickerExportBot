@@ -72,10 +72,10 @@ process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))
 
 
-function download(url, directory, name) {
+function download(url, directory, name, extension) {
 
     const dir = "files/" + directory + "/";
-    const path = dir + name + url.split(".").at(-1);
+    const path = dir + name + "." + url.pathname.split(".").at(-1);
 
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
