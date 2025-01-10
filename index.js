@@ -31,7 +31,7 @@ bot.on(message('sticker'), async (ctx) => {
     for (let sticker of set.stickers) {
         let link = await ctx.telegram.getFileLink(sticker.file_id);
         links.push(link)
-        await download(link, set.name)
+        await download(link, set.name, sticker.file_id)
     }
     
     let z = new AdmZip();
@@ -67,29 +67,33 @@ process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))
 
 
-function download(url, directory) {
+function download(url, directory, name) {
 
     const dir = "files/" + directory + "/";
-    const path = dir + (url + "").split("/").at(-1);
+    const path = dir + name.split(".").at(-1);
 
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
     }
 
-    https.get(url, (res) => {
-        console.info(`Download from ${url} started`)
+    if(!fs.existsSync(path)) {
+        https.get(url, (res) => {
+            console.info(`Download from ${url} started`)
 
-        const writeStream = fs.createWriteStream(path);
+            const writeStream = fs.createWriteStream(path);
 
-        res.pipe(writeStream);
+            res.pipe(writeStream);
 
-        writeStream.on("finish", () => {
-            writeStream.close();
-            console.log(`Download ${path} completed`);
+            writeStream.on("finish", () => {
+                writeStream.close();
+                console.log(`Download ${path} completed`);
+            });
+            writeStream.on("error", (e) => {
+                console.log(`Download ${path} errored: ${e}`);
+                writeStream.destroy();
+            });
         });
-        writeStream.on("error", (e) => {
-            console.log(`Download ${path} errored: ${e}`);
-            writeStream.destroy();
-        });
-    });
+    } else {
+        console.log(`Skipped download of ${path} - File exists`)
+    } 
 }
